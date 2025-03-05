@@ -36,12 +36,13 @@ local function getEnv(dom)
     global[k] = v
   end
   global.sleep = sleep
-  -- global.print = print
   global.pairs = pairs
   global.ipairs = ipairs
   global.tostring = tostring
-  -- todo: how to isolate these??
-  global.string = string
+  global.string = {}
+  for k,v in pairs(string) do
+    global.string[k] = v
+  end
   return global
 end
 
