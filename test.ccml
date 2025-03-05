@@ -1,0 +1,37 @@
+<ccml>
+  <body>
+    <text id="toEdit"></text>
+    <script>
+      local txt = "Hello world!  This is a test!  Banana for scale!  "
+      local element = getElementById("toEdit",dom)[1]
+      local width = 15
+      while true do
+        for i=-width,#txt do
+          element.value = string.sub(txt,i,i+width)
+          rerender()
+          sleep(0.25)
+        end
+      end
+    </script><br/>
+    <blit text="1234" background="5678">BLIT</blit><br/>
+    <color text="black" background="white">
+      <color text="lightBlue" background="white">
+        <text>Light Blue</text>
+      </color>
+      <text>White</text>
+      <color text="purple" background="white">
+        <text>Purple</text>
+      </color>
+    </color><br/>
+    <align value="center">
+      <text>Center</text>
+    </align>
+    <align value="right">
+      <text>Right</text>
+    </align><br/>
+    <align value="center">
+      <big>Big Text (C)</big><br/>
+    </align><br/>
+    <img src="img.nfp"></img>
+  </body>
+</ccml>
