@@ -1,0 +1,16 @@
+<ccml>
+  <body>
+    <br/>
+    <img src="img.nfp"></img>
+    <align value="center">
+      <big>CCML Browser</big><br/><br/><br/>
+    </align>
+    <align value="right">
+      <text>Emily_042</text><br/>
+    </align>
+    <hr/>
+    <text>This is a demo site. It uses an experimental browser rendering engine. So far, it supports setting </text>
+    <color text="lightBlue"><text>text</text></color><text> and </text><color text="purple"><text>background</text></color>
+    <text> colors, scripting, images, center and right alignment of text, and more.</text>
+  </body>
+</ccml>
