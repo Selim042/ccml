@@ -1,7 +1,7 @@
 <ccml>
   <body>
     <br/>
-    <img src="img.nfp"></img>
+    <img src="pages/img.nfp"></img>
     <align value="center">
       <big>CCML Browser</big><br/><br/><br/>
     </align>
