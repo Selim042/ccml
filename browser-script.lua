@@ -20,7 +20,7 @@ local function getFunctions()
     return ret
   end
   local function rerender()
-    os.queueEvent('browser-rerender')
+    os.queueEvent('browser_rerender')
   end
   return {
     getElementById = getElementById,

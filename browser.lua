@@ -1,6 +1,7 @@
 local file = ({...})[1]
 local path = shell.dir()
 
+local primeui = require('primeui')
 local xmlLib = require('xmlLib')
 local bigfont = require('bigfont')
 local stringWrap = require('cc.strings').wrap
@@ -8,6 +9,11 @@ local browserScript = require('browser-script')
 local logger = require('logger').open(path..'/log.txt')
 logger.setTimeOffset(-5)
 -- logger.enableDebug()
+
+if (string.find(_G._HOST,"CraftOS%-PC") ~= nil) then
+  -- debug.debug()
+  logger.setMonitor(peripheral.wrap('left'))
+end
 
 logger.info("Browser started")
 logger.info("Viewing "..path..'/'..file)
@@ -202,13 +208,23 @@ addressWindow.setTextColor(colors.black)
 addressWindow.clear()
 -- addressWindow.setVisible(true)
 
-renderWindow = window.create(term.current(),1,2,termW,termH-1)
+renderWindow = primeui.scrollBox(term.current(),1,2,termW,termH-1,10,true,true)
+local oldScroll = renderWindow.scroll
+renderWindow.scroll = function(num)
+  if (num > 0) then
+    local posX,posY = renderWindow.getPosition()
+    local winW,winH = renderWindow.getSize()
+    renderWindow.reposition(posX,posY,winW,winH+num)
+  end
+  oldScroll(num)
+end
+-- renderWindow = window.create(term.current(),1,2,termW,termH-1)
 windowStack[#windowStack+1] = renderWindow
 term.redirect(renderWindow)
 
 local function renderAddress()
   addressWindow.setCursorPos(1,1)
-  addressWindow.write("file://"..path..'/'..file)
+  addressWindow.write("file:/"..path..'/'..file)
 end
 
 local function renderBody(bodyTag)
@@ -245,21 +261,27 @@ term.clear()
 term.setCursorPos(1,1)
 renderBody(bodyTag)
 
+local function rerender()
+  term.setTextColor(colors.white)
+  term.setBackgroundColor(colors.black)
+  term.clear()
+  term.setCursorPos(1,1)
+  renderBody(bodyTag)
+end
+
 parallel.waitForAll(
   function()
+    rerender()
     while true do
-    term.setTextColor(colors.white)
-    term.setBackgroundColor(colors.black)
-    term.clear()
-    term.setCursorPos(1,1)
-    renderBody(bodyTag)
-
       local e = {os.pullEvent()}
-      if (e == 'mouse_click') then
+      if (e[1] == 'mouse_click') then
 
+      elseif (e[1] == 'browser_rerender') then -- TODO: find better way to handle this
+        rerender()
       end
     end
   end,
+  primeui.run,
   table.unpack(scripts)
 )
 logger.close()
