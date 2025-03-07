@@ -5,7 +5,6 @@ local primeui = require('primeui')
 local xmlLib = require('xmlLib')
 local bigfont = require('bigfont')
 local stringWrap = require('cc.strings').wrap
-local ensureWidth = require('cc.strings').ensure_width
 local browserScript = require('browser-script')
 local logger = require('logger').open(path..'/log.txt')
 logger.setTimeOffset(-5)
@@ -84,38 +83,21 @@ local function writeWrapped(text)
     setAlignment(#text)
     term.write(text)
   else
-    local shortText = ensureWidth(text,termW-curX)
-    setAlignment(#shortText)
-    term.write(shortText)
-    local newText = string.sub(text,#shortText+1)
+    local lines = stringWrap(text,termW-curX)
+    setAlignment(#lines[1])
+    term.write(lines[1])
+    local newText = string.sub(text,#lines[1]+1)
     if (#newText > 0) then
       print()
     end
     writeWrapped(newText)
   end
-  -- for i=1,#lines do
-  --   setAlignment(#lines[1])
-  --   term.write(lines[i])
-  --   if (i ~= #lines) then
-  --     print()
-  --   end
-  -- end
 end
 
 bodyTagHandlers.text = {
   start = function(xml)
     if (xml.value ~= nil) then
       writeWrapped(xml.value)
-      -- local termW,termH = term.getSize()
-      -- local curX,curY = term.getCursorPos()
-      -- local lines = stringWrap(xml.value, termW-curX)
-      -- for i=1,#lines do
-      --   setAlignment(#lines[1])
-      --   term.write(lines[i])
-      --   if (i ~= #lines) then
-      --     print()
-      --   end
-      -- end
     end
   end
 }
