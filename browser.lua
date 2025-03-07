@@ -80,10 +80,16 @@ local function writeWrapped(text)
   local termW,termH = term.getSize()
   local curX,curY = term.getCursorPos()
   if (termW-curX >= #text) then
+    if (curX == 1 and text:sub(1,1) == ' ') then
+      text = text:sub(2)
+    end
     setAlignment(#text)
     term.write(text)
   else
     local lines = stringWrap(text,termW-curX)
+    if (curX == 1 and lines[1]:sub(1,1) == ' ') then
+      lines[1] = lines[1]:sub(2)
+    end
     setAlignment(#lines[1])
     term.write(lines[1])
     local newText = string.sub(text,#lines[1]+1)
@@ -191,7 +197,11 @@ bodyTagHandlers.script = {
 bodyTagHandlers.hr = {
   start = function(xml)
     local termW,termH = term.getSize()
-    term.write(('-'):rep(termW))
+    local char = '-'
+    if (xml.attributes.pattern ~= nil) then
+      char = xml.attributes.pattern
+    end
+    term.write((char):rep(termW))
     print()
   end
 }
