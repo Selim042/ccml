@@ -182,9 +182,7 @@ bodyTagHandlers.script = {
 bodyTagHandlers.hr = {
   start = function(xml)
     local termW,termH = term.getSize()
-    for i=1,termW do
-      term.write('-')
-    end
+    term.write(('-'):rep(termW))
     print()
   end
 }
@@ -208,7 +206,16 @@ addressWindow.setTextColor(colors.black)
 addressWindow.clear()
 -- addressWindow.setVisible(true)
 
-renderWindow = primeui.scrollBox(term.current(),1,2,termW,termH-1,10,true,true)
+renderWindow = primeui.scrollBox(term.current(),1,2,termW,termH-1,termH-1,true,true)
+local oldSetCursPos = renderWindow.setCursorPos
+renderWindow.setCursorPos = function(x,y)
+  local posX,posY = renderWindow.getPosition()
+  local winW,winH = renderWindow.getSize()
+  if (y > winH) then
+    renderWindow.reposition(posX,posY,winW,y)
+  end
+  return oldSetCursPos(x,y)
+end
 local oldScroll = renderWindow.scroll
 renderWindow.scroll = function(num)
   if (num > 0) then
@@ -216,7 +223,7 @@ renderWindow.scroll = function(num)
     local winW,winH = renderWindow.getSize()
     renderWindow.reposition(posX,posY,winW,winH+num)
   end
-  oldScroll(num)
+  return oldScroll(num)
 end
 -- renderWindow = window.create(term.current(),1,2,termW,termH-1)
 windowStack[#windowStack+1] = renderWindow
