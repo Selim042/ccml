@@ -76,18 +76,18 @@ bodyTagHandlers.align = {
   end
 }
 
-local function writeWrapped(text)
+local function writeWrapped(text,rootLevel)
   local termW,termH = term.getSize()
   local curX,curY = term.getCursorPos()
   if (termW-curX >= #text) then
-    if (curX == 1 and text:sub(1,1) == ' ') then
+    if (not rootLevel and text:sub(1,1) == ' ') then
       text = text:sub(2)
     end
     setAlignment(#text)
     term.write(text)
   else
     local lines = stringWrap(text,termW-curX)
-    if (curX == 1 and lines[1]:sub(1,1) == ' ') then
+    if (not rootLevel and lines[1]:sub(1,1) == ' ') then
       lines[1] = lines[1]:sub(2)
     end
     setAlignment(#lines[1])
@@ -103,7 +103,7 @@ end
 bodyTagHandlers.text = {
   start = function(xml)
     if (xml.value ~= nil) then
-      writeWrapped(xml.value)
+      writeWrapped(xml.value,true)
     end
   end
 }
