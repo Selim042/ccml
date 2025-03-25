@@ -75,7 +75,7 @@ api.open = function(filePath)
   end
 
   ret.debug = function(msg)
-    if (not closed and debugEnabled) then
+    if (not isClosed and debugEnabled) then
       writeTime()
       writeName()
       fileWrite('[DEBUG] ')
