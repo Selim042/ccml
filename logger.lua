@@ -6,6 +6,7 @@ api.open = function(filePath)
   local isClosed = false
   local timeOffset = 0
   local monitor = nil
+  local name = nil
 
   local function fileWrite(msg)
     file.write(msg)
@@ -46,11 +47,20 @@ api.open = function(filePath)
     fileWrite(']')
   end
 
+  local function writeName()
+    if (name ~= nil) then
+      fileWrite('[')
+      fileWrite(name)
+      fileWrite(']')
+    end
+  end
+
   local ret = {}
   ret.info = function(msg)
     if (not isClosed) then
       writeTime()
-      fileWrite(' [INFO] ')
+      writeName()
+      fileWrite('[INFO] ')
       fileWriteLine(msg)
     end
   end
@@ -58,7 +68,8 @@ api.open = function(filePath)
   ret.error = function(msg)
     if (not isClosed) then
       writeTime()
-      fileWrite(' [ERROR] ')
+      writeName()
+      fileWrite('[ERROR] ')
       fileWriteLine(msg)
     end
   end
@@ -66,7 +77,8 @@ api.open = function(filePath)
   ret.debug = function(msg)
     if (not closed and debugEnabled) then
       writeTime()
-      fileWrite(' [DEBUG] ')
+      writeName()
+      fileWrite('[DEBUG] ')
       fileWriteLine(msg)
     end
   end
@@ -83,6 +95,10 @@ api.open = function(filePath)
     monitor = mon
     local monW,monH = monitor.getSize()
     monitor.setCursorPos(1,monH)
+  end
+
+  ret.setName = function(nm)
+    name = nm
   end
 
   ret.close = function()
