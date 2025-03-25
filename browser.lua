@@ -4,7 +4,7 @@ local path = shell.dir()
 local primeui = require('primeui')
 local xmlLib = require('xmlLib')
 local bigfont = require('bigfont')
-local stringWrap = require('cc.strings').wrap
+local strings = require('cc.strings')
 local browserScript = require('browser-script')
 local networking = require('networking')
 local logger = require('logger').open(path..'/log.txt')
@@ -12,7 +12,6 @@ logger.setTimeOffset(-5)
 -- logger.enableDebug()
 
 if (string.find(_G._HOST,"CraftOS%-PC") ~= nil) then
-  -- debug.debug()
   logger.setMonitor(peripheral.wrap('left'))
 end
 
@@ -88,7 +87,7 @@ local function writeWrapped(text,rootLevel)
     setAlignment(#text)
     term.write(text)
   else
-    local lines = stringWrap(text,termW-curX)
+    local lines = strings.wrap(text,termW-curX)
     if (not rootLevel and lines[1]:sub(1,1) == ' ') then
       lines[1] = lines[1]:sub(2)
     end
@@ -165,13 +164,14 @@ bodyTagHandlers.colour = bodyTagHandlers.color
 
 bodyTagHandlers.img = {
   start = function(xml)
-    local imgFilePath = shell.dir()..'/'..xml.attributes.src
+    local protocol = strings.split(file,':')[1]
+    local imgFilePath = protocol..'://'..xml.attributes.src
     -- print(imgFilePath)
     if (string.sub(imgFilePath,-4,-1) == '.nfp') then
       local tColor = term.getTextColor()
       local bColor = term.getBackgroundColor()
 
-      local img = paintutils.loadImage(imgFilePath)
+      local img = paintutils.parseImage(networking.getFile(imgFilePath))
       -- term.scroll(#img)
       local cX,cY = term.getCursorPos()
       paintutils.drawImage(img,cX,cY)
@@ -203,7 +203,7 @@ bodyTagHandlers.hr = {
     if (xml.attributes.pattern ~= nil) then
       char = xml.attributes.pattern
     end
-    term.write((char):rep(termW))
+    term.write(string.rep(char,termW))
     print()
   end
 }
