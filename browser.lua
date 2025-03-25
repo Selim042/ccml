@@ -6,6 +6,7 @@ local xmlLib = require('xmlLib')
 local bigfont = require('bigfont')
 local stringWrap = require('cc.strings').wrap
 local browserScript = require('browser-script')
+local networking = require('networking')
 local logger = require('logger').open(path..'/log.txt')
 logger.setTimeOffset(-5)
 -- logger.enableDebug()
@@ -19,9 +20,10 @@ logger.info("Browser started")
 logger.info("Viewing "..path..'/'..file)
 logger.info("Loading browser script v"..browserScript.VERSION)
 
-local fileHandle = fs.open(shell.dir()..'/'..file,'r')
-local xml = xmlLib.parseText(fileHandle.readAll())
-fileHandle.close()
+-- local fileHandle = fs.open(shell.dir()..'/'..file,'r')
+-- local xml = xmlLib.parseText(fileHandle.readAll())
+local xml = xmlLib.parseText(networking.getFile(file))
+-- fileHandle.close()
 
 local function findChildren(xml,tagName)
   local ret = {}
@@ -206,6 +208,23 @@ bodyTagHandlers.hr = {
   end
 }
 
+bodyTagHandlers.link = {
+  start = function(xml)
+    setAlignment(#xml.value)
+    local curX,curY = term.getCursorPos()
+    local tColor = term.getTextColor()
+    local bgColor = term.getBackgroundColor()
+    primeui.button(term.current(),curX,curY,xml.value,
+      function()
+        file = xml.dest
+        logger.info("link clicked!")
+      end
+    )
+    term.setTextColor(tColor)
+    term.setBackgroundColor(bgColor)
+  end
+}
+
 -- bodyTagHandlers.window = {
 --   start = function(xml)
 --     local newWindow = window.create(term,xml.attributes.x,xml.attributes.y,xml.attributes.width,xml.attributes.height)
@@ -225,7 +244,7 @@ addressWindow.setTextColor(colors.black)
 addressWindow.clear()
 -- addressWindow.setVisible(true)
 
-renderWindow = primeui.scrollBox(term.current(),1,2,termW,termH-1,termH-1,true,true)
+local renderWindow = primeui.scrollBox(term.current(),1,2,termW,termH-1,termH-1,true,true)
 local oldSetCursPos = renderWindow.setCursorPos
 renderWindow.setCursorPos = function(x,y)
   local posX,posY = renderWindow.getPosition()
@@ -250,7 +269,7 @@ term.redirect(renderWindow)
 
 local function renderAddress()
   addressWindow.setCursorPos(1,1)
-  addressWindow.write("file:/"..path..'/'..file)
+  addressWindow.write(file)
 end
 
 local function renderBody(bodyTag)
