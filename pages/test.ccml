@@ -1,6 +1,8 @@
 <ccml>
   <body>
-    <text id="toEdit"></text>
+    <text>First line</text><br/>
+    <link dest="page2.ccml">Page 2!</link><br/>
+    <text id="toEdit">YOU CAN'T SEE ME</text>
     <script>
       local txt = "Hello world!  This is a test!  Banana for scale!  "
       local element = getElementById("toEdit",dom)[1]
@@ -13,6 +15,7 @@
         end
       end
     </script><br/>
+    <hr pattern="--+"/>
     <blit text="1234" background="5678">BLIT</blit><br/>
     <color text="black" background="white">
       <color text="lightBlue" background="white">

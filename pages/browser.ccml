@@ -1,6 +1,5 @@
 <ccml>
   <body>
-    <br/>
     <img src="pages/img.nfp"></img>
     <align value="center">
       <big>CCML Browser</big><br/><br/><br/>
@@ -10,13 +9,22 @@
     </align>
     <hr pattern="-"/>
     <text>This is a demo site. It uses an experimental browser rendering engine. So far, it supports setting </text>
-    <color text="lightBlue"><text>text</text></color><text> and </text><color text="purple"><text>background</text></color>
+    <color text="lightBlue"><text>text</text></color><text> and </text><color background="purple"><text>background</text></color>
     <text> colors, scripting, images, center and right alignment of text, and more.</text><br/>
     <br/>
     <text>It also now supports scrollable windows! Once the page gets tall enough, the scrollbars are enabled.</text><br/>
     <br/>
-    <text>Horizontal lines are neat, with different patterns!</text><br/>
-    <hr pattern="-=- "/>
-    <hr pattern="-="/>
+    <text>Horizontal lines are neat, with different patterns!</text><br/><br/>
+    <hr pattern="-=- "/><br/>
+    <hr pattern="-="/><br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <text>Scroll bar!</text>
   </body>
 </ccml>

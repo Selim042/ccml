@@ -16,7 +16,7 @@ if (string.find(_G._HOST,"CraftOS%-PC") ~= nil) then
 end
 
 logger.info("Browser started")
-logger.info("Viewing "..path..'/'..file)
+logger.info("Viewing "..file)
 logger.info("Loading browser script v"..browserScript.VERSION)
 
 -- local fileHandle = fs.open(shell.dir()..'/'..file,'r')
@@ -174,6 +174,9 @@ bodyTagHandlers.img = {
       local img = paintutils.parseImage(networking.getFile(imgFilePath))
       -- term.scroll(#img)
       local cX,cY = term.getCursorPos()
+      if (cY <= 2) then
+        term.scroll(#img)
+      end
       paintutils.drawImage(img,cX,cY)
 
       term.setTextColor(tColor)
@@ -244,7 +247,7 @@ addressWindow.setTextColor(colors.black)
 addressWindow.clear()
 -- addressWindow.setVisible(true)
 
-local renderWindow = primeui.scrollBox(term.current(),1,2,termW,termH-1,termH-1,true,true)
+local renderWindow = primeui.scrollBox(term.current(),1,2,termW,termH-1,termH-1,true,true,colors.white,colors.gray)
 local oldSetCursPos = renderWindow.setCursorPos
 renderWindow.setCursorPos = function(x,y)
   local posX,posY = renderWindow.getPosition()
