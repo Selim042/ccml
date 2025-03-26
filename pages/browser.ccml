@@ -1,10 +1,10 @@
 <ccml>
   <head>
     <icon text="a0" background="33">\136\138</icon>
-    <title>Example Page</title>
+    <title>CCML - Example Page</title>
   </head>
   <body>
-    <img src="pages/img.nfp"></img>
+    <img src="img.nfp"></img>
     <align value="center">
       <big>CCML Browser</big><br/><br/><br/>
     </align>

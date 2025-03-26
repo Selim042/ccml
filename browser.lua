@@ -1,15 +1,16 @@
 local file = ({...})[1]
 local path = shell.dir()
 
+local logger = require('logger').open(path..'/log.txt')
+logger.setTimeOffset(-5)
+-- logger.enableDebug()
+
 local primeui = require('primeui')
 local xmlLib = require('xmlLib')
 local bigfont = require('bigfont')
 local strings = require('cc.strings')
 local browserScript = require('browser-script')
-local networking = require('networking')
-local logger = require('logger').open(path..'/log.txt')
-logger.setTimeOffset(-5)
--- logger.enableDebug()
+local networking = require('networking')(logger)
 
 if (string.find(_G._HOST,"CraftOS%-PC") ~= nil) then
   logger.setMonitor(peripheral.wrap('left'))
@@ -166,7 +167,12 @@ bodyTagHandlers.colour = bodyTagHandlers.color
 bodyTagHandlers.img = {
   start = function(xml)
     local protocol = strings.split(file,':')[1]
-    local imgFilePath = protocol..'://'..xml.attributes.src
+
+    local slashSplit = strings.split(file,'/')
+    slashSplit[#slashSplit] = nil
+    local pathMinusFile = table.concat(slashSplit,'/')
+    -- local imgFilePath = protocol..'://'..xml.attributes.src
+    local imgFilePath = pathMinusFile..'/'..xml.attributes.src
     -- print(imgFilePath)
     if (string.sub(imgFilePath,-4,-1) == '.nfp') then
       local tColor = term.getTextColor()
@@ -287,16 +293,20 @@ local function renderTitle()
   titleWindow.setTextColor(colors.black)
   titleWindow.setBackgroundColor(colors.white)
 
-  local iconTag = findChildren(headTag.children,'icon')[1]
-  logger.info("Loaded icon: "..iconTag.value)
-  logger.info("Loaded icon: "..tostring(select('#',iconTag.value)))
-  titleWindow.blit(strings.ensure_width(tostring(iconTag.value),2),strings.ensure_width(iconTag.attributes.text,2),strings.ensure_width(iconTag.attributes.background,2))
-  titleWindow.setTextColor(colors.black)
-  titleWindow.setBackgroundColor(colors.white)
+  local title
+  if (headTag ~= nil) then
+    local iconTag = findChildren(headTag.children,'icon')[1]
+    titleWindow.blit(strings.ensure_width(tostring(iconTag.value),2),strings.ensure_width(iconTag.attributes.text,2),strings.ensure_width(iconTag.attributes.background,2))
+    titleWindow.setTextColor(colors.black)
+    titleWindow.setBackgroundColor(colors.white)
 
-  local titleTag = findChildren(headTag.children,'title')[1]
+    local titleTag = findChildren(headTag.children,'title')[1]
+    title = titleTag.value
+  else
+    title = "Untitled Page"
+  end
   titleWindow.setCursorPos(5,1)
-  titleWindow.write(titleTag.value)
+  titleWindow.write(title)
 end
 
 local function renderBody(bodyTag)

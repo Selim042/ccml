@@ -1,4 +1,5 @@
 local strings = require('cc.strings')
+local logger
 
 local api = {}
 
@@ -17,11 +18,25 @@ local stacks = {
             return {"file"}
         end,
         getFile = function(path)
+            logger.info("file network, attempting to load "..path)
             local protocol = strings.split(path,':')
             local file = fs.open(protocol[2],'r')
             local cont = file.readAll()
             file.close()
             return cont
+        end
+    },
+    {
+        getProtocols = function()
+            return {"http","https"}
+        end,
+        getFile = function(path)
+            local resp,err = http.get(path)
+            if (err ~= nil) then
+                logger.error("failed request to "..path.." "..err)
+                return ""
+            end
+            return resp.readAll()
         end
     }
 }
@@ -52,4 +67,7 @@ api.getFile = function(path)
     end
 end
 
-return api
+return function(log)
+    logger = log
+    return api
+end
