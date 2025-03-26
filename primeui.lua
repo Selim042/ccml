@@ -680,6 +680,49 @@ function PrimeUI.scrollBox(win, x, y, width, height, innerHeight, allowArrowKeys
     x, y = PrimeUI.getWindowPos(win, x, y)
     -- Add the scroll handler.
     local scrollPos = 1
+    local function drawScroll()
+        if showScrollIndicators then
+            outer.setBackgroundColor(bgColor)
+            outer.setTextColor(fgColor)
+            outer.setCursorPos(width, 1)
+
+            --[[ Rather than hide scroll indicators, gray them out ]]--
+            local oldTextColor = outer.getTextColor()
+            local oldBackColor = outer.getBackgroundColor()
+            if (scrollPos > 1) then
+                outer.setTextColor(fgColor)
+            else
+                outer.setTextColor(colors.lightGray)
+            end
+            outer.write("\30")
+
+            local maxScrollbarHeight = height - 3
+            local dec = maxScrollbarHeight / innerHeight
+            local startBarPos = math.floor(scrollPos * dec) + 2
+            local endBarPos = math.ceil((scrollPos + maxScrollbarHeight) * dec) + 3
+            for i=2,height-1 do
+                outer.setCursorPos(width,i)
+                if (i >= startBarPos and i <= endBarPos) then
+                    outer.setBackgroundColor(fgColor)
+                else
+                    outer.setBackgroundColor(oldBackColor)
+                end
+                outer.write(" ")
+            end
+            outer.setBackgroundColor(oldBackColor)
+
+            outer.setCursorPos(width, height)
+            if (scrollPos < innerHeight - height) then
+                outer.setTextColor(fgColor)
+            else
+                outer.setTextColor(colors.lightGray)
+            end
+            outer.write("\31")
+
+            outer.setTextColor(oldTextColor)
+            outer.setBackgroundColor(oldBackColor)
+        end
+    end
     PrimeUI.addTask(function()
         while true do
             -- Wait for next event.
@@ -700,14 +743,7 @@ function PrimeUI.scrollBox(win, x, y, width, height, innerHeight, allowArrowKeys
                 inner.reposition(1, 2 - scrollPos)
             end
             -- Redraw scroll indicators if desired.
-            if showScrollIndicators then
-                outer.setBackgroundColor(bgColor)
-                outer.setTextColor(fgColor)
-                outer.setCursorPos(width, 1)
-                outer.write(scrollPos > 1 and "\30" or " ")
-                outer.setCursorPos(width, height)
-                outer.write(scrollPos < innerHeight - height and "\31" or " ")
-            end
+            drawScroll()
         end
     end)
     -- Make a function to allow external scrolling.
@@ -719,14 +755,7 @@ function PrimeUI.scrollBox(win, x, y, width, height, innerHeight, allowArrowKeys
         scrollPos = pos
         inner.reposition(1, 2 - scrollPos)
         -- Redraw scroll indicators if desired.
-        if showScrollIndicators then
-            outer.setBackgroundColor(bgColor)
-            outer.setTextColor(fgColor)
-            outer.setCursorPos(width, 1)
-            outer.write(scrollPos > 1 and "\30" or " ")
-            outer.setCursorPos(width, height)
-            outer.write(scrollPos < innerHeight - height and "\31" or " ")
-        end
+        drawScroll()
     end
     return inner, scroll
 end
