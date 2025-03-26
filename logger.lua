@@ -93,8 +93,10 @@ api.open = function(filePath)
 
   ret.setMonitor = function(mon)
     monitor = mon
-    local monW,monH = monitor.getSize()
-    monitor.setCursorPos(1,monH)
+    if (monitor ~= nil) then
+      local monW,monH = monitor.getSize()
+      monitor.setCursorPos(1,monH)
+    end
   end
 
   ret.setName = function(nm)

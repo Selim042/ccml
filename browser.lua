@@ -12,10 +12,15 @@ logger.setTimeOffset(-5)
 -- logger.enableDebug()
 
 if (string.find(_G._HOST,"CraftOS%-PC") ~= nil) then
+  periphemu.create('left', 'monitor')
   logger.setMonitor(peripheral.wrap('left'))
 end
 
 logger.info("Browser started")
+if (file == nil) then
+  logger.error("no file specified")
+  return
+end
 logger.info("Viewing "..file)
 logger.info("Loading browser script v"..browserScript.VERSION)
 
