@@ -52,6 +52,7 @@ end
 local windowStack = {}
 local ccmlTag = findChildren(xml,'ccml')[1]
 local bodyTag = findChildren(ccmlTag.children,'body')[1]
+local headTag = findChildren(ccmlTag.children,'head')[1]
 
 local alignmentStack = {}
 local function setAlignment(width)
@@ -241,13 +242,18 @@ bodyTagHandlers.link = {
 -- }
 
 local termW,termH = term.getSize()
-local addressWindow = window.create(term.current(),1,1,termW,1)
-addressWindow.setBackgroundColor(colors.white)
+local titleWindow = window.create(term.current(),1,1,termW,1)
+titleWindow.setBackgroundColor(colors.white)
+titleWindow.setTextColor(colors.black)
+titleWindow.clear()
+
+local addressWindow = window.create(term.current(),1,2,termW,1)
+addressWindow.setBackgroundColor(colors.lightGray)
 addressWindow.setTextColor(colors.black)
 addressWindow.clear()
 -- addressWindow.setVisible(true)
 
-local renderWindow = primeui.scrollBox(term.current(),1,2,termW,termH-1,termH-1,true,true,colors.white,colors.gray)
+local renderWindow = primeui.scrollBox(term.current(),1,3,termW,termH-2,termH-2,true,true,colors.white,colors.gray)
 local oldSetCursPos = renderWindow.setCursorPos
 renderWindow.setCursorPos = function(x,y)
   local posX,posY = renderWindow.getPosition()
@@ -273,6 +279,24 @@ term.redirect(renderWindow)
 local function renderAddress()
   addressWindow.setCursorPos(1,1)
   addressWindow.write(file)
+end
+
+local function renderTitle()
+  titleWindow.clear()
+  titleWindow.setCursorPos(2,1)
+  titleWindow.setTextColor(colors.black)
+  titleWindow.setBackgroundColor(colors.white)
+
+  local iconTag = findChildren(headTag.children,'icon')[1]
+  logger.info("Loaded icon: "..iconTag.value)
+  logger.info("Loaded icon: "..tostring(select('#',iconTag.value)))
+  titleWindow.blit(strings.ensure_width(tostring(iconTag.value),2),strings.ensure_width(iconTag.attributes.text,2),strings.ensure_width(iconTag.attributes.background,2))
+  titleWindow.setTextColor(colors.black)
+  titleWindow.setBackgroundColor(colors.white)
+
+  local titleTag = findChildren(headTag.children,'title')[1]
+  titleWindow.setCursorPos(5,1)
+  titleWindow.write(titleTag.value)
 end
 
 local function renderBody(bodyTag)
@@ -303,6 +327,7 @@ local function renderBody(bodyTag)
 end
 
 renderAddress()
+renderTitle()
 term.setTextColor(colors.white)
 term.setBackgroundColor(colors.black)
 term.clear()
@@ -326,6 +351,7 @@ parallel.waitForAll(
 
       elseif (e[1] == 'browser_rerender') then -- TODO: find better way to handle this
         rerender()
+        renderTitle()
       end
     end
   end,

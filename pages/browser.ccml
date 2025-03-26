@@ -1,4 +1,8 @@
 <ccml>
+  <head>
+    <icon text="a0" background="33">\136\138</icon>
+    <title>Example Page</title>
+  </head>
   <body>
     <img src="pages/img.nfp"></img>
     <align value="center">
@@ -10,7 +14,7 @@
     <hr pattern="-"/>
     <text>This is a demo site. It uses an experimental browser rendering engine. So far, it supports setting </text>
     <color text="lightBlue"><text>text</text></color><text> and </text><color background="purple"><text>background</text></color>
-    <text> colors, scripting, images, center and right alignment of text, and more.</text><br/>
+    <text> colors, </text><blit text="1234" background="abcd">blit</blit><text>, scripting, images, center and right alignment of text, and more.</text><br/>
     <br/>
     <text>It also now supports scrollable windows! Once the page gets tall enough, the scrollbars are enabled.</text><br/>
     <br/>

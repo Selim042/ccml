@@ -40,6 +40,9 @@ end
 
 local XMLParser = {
     parseText = function(xmlText)
+        -- Allow \ encoded special characters
+        xmlText = xmlText:gsub("\\(%d%d%d?)", function(n) return string.char(tonumber(n)) end)
+
         local stack = {}
         local top = XMLNode.new()
         table.insert(stack, top)
