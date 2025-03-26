@@ -21,7 +21,7 @@
     <text>Horizontal lines are neat, with different patterns!</text><br/><br/>
     <hr pattern="-=- "/><br/>
     <hr pattern="-="/><br/>
-    <br/>
+    <text>As you can see, at the top of the page we also now have icons and page titles!</text>
     <br/>
     <br/>
     <br/>
