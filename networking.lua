@@ -68,7 +68,7 @@ api.getFile = function(path)
 end
 
 -- Parse URI like describe in https://en.wikipedia.org/wiki/URI (don't support ipv6)
-api.UriParser = function(url)
+api.uriParser = function(url)
     local res = {}
     local tokens = strings.split(url,':', true, 1)
     if #tokens == 1 then
