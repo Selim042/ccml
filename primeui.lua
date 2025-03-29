@@ -2,6 +2,7 @@
 -- Public domain/CC0
 
 local expect = require "cc.expect".expect
+local logger
 
 -- Initialization code
 local PrimeUI = {}
@@ -1080,4 +1081,7 @@ function PrimeUI.verticalLine(win, x, y, height, right, fgColor, bgColor)
 end
 
 -- YOUR CODE HERE
+return function(log)
+    logger = log
 return PrimeUI
+end

@@ -5,11 +5,11 @@ local logger = require('logger').open(path..'/log.txt')
 logger.setTimeOffset(-5)
 -- logger.enableDebug()
 
-local primeui = require('primeui')
+local primeui = require('primeui')(logger)
 local xmlLib = require('xmlLib')
 local bigfont = require('bigfont')
 local strings = require('cc.strings')
-local browserScript = require('browser-script')
+local browserScript = require('browser-script')(logger)
 local networking = require('networking')(logger)
 
 if (string.find(_G._HOST,"CraftOS%-PC") ~= nil) then

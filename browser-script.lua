@@ -1,3 +1,5 @@
+local logger
+
 local api = {}
 api.VERSION = "1.0.0"
 
@@ -54,4 +56,7 @@ api.execute = function(script,dom)
   loadedScript()
 end
 
+return function(log)
+  logger = log
 return api
+end
