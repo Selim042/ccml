@@ -289,11 +289,16 @@ term.redirect(renderWindow)
 
 local function renderAddress()
   addressWindow.setCursorPos(1,1)
-  addressWindow.write(file)
+  addressWindow.write(strings.ensure_width(file,termW))
 end
 
 local function renderTitle()
   titleWindow.clear()
+  titleWindow.setCursorPos(termW,1)
+  titleWindow.setBackgroundColor(colors.red)
+  titleWindow.setTextColor(colors.white)
+  titleWindow.write("X")
+
   titleWindow.setCursorPos(2,1)
   titleWindow.setTextColor(colors.black)
   titleWindow.setBackgroundColor(colors.white)
@@ -301,17 +306,26 @@ local function renderTitle()
   local title
   if (headTag ~= nil) then
     local iconTag = findChildren(headTag.children,'icon')[1]
+    if (iconTag ~= nil) then
+      titleWindow.blit(strings.ensure_width(tostring(iconTag.value),2),strings.ensure_width(iconTag.attributes.text,2),strings.ensure_width(iconTag.attributes.background,2))
+      titleWindow.setTextColor(colors.black)
+      titleWindow.setBackgroundColor(colors.white)
+    end
+  if (headTag ~= nil) then
+    local iconTag = findChildren(headTag.children,'icon')[1]
     titleWindow.blit(strings.ensure_width(tostring(iconTag.value),2),strings.ensure_width(iconTag.attributes.text,2),strings.ensure_width(iconTag.attributes.background,2))
     titleWindow.setTextColor(colors.black)
     titleWindow.setBackgroundColor(colors.white)
 
     local titleTag = findChildren(headTag.children,'title')[1]
-    title = titleTag.value
+    if (titleTag ~= nil) then
+      title = titleTag.value
+    end
   else
     title = "Untitled Page"
   end
   titleWindow.setCursorPos(5,1)
-  titleWindow.write(title)
+  titleWindow.write(strings.ensure_width(title,termW-5))
 end
 
 local function renderBody(bodyTag)
@@ -361,12 +375,19 @@ parallel.waitForAll(
   function()
     rerender()
     while true do
-      local e = {os.pullEvent()}
+      local e = {os.pullEventRaw()}
       if (e[1] == 'mouse_click') then
-
+        if (e[2] == 1 and e[3] == termW and e[4] == 1) then
+          os.queueEvent('terminate')
+        end
       elseif (e[1] == 'browser_rerender') then -- TODO: find better way to handle this
         rerender()
         renderTitle()
+      elseif (e[1] == 'terminate') then
+        term.scroll(termH)
+        term.clear()
+        term.setCursorPos(1,1)
+        return
       end
     end
   end,
