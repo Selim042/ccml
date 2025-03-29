@@ -61,5 +61,5 @@ end
 
 return function(log)
   logger = log
-return api
+  return api
 end
