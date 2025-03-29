@@ -237,7 +237,7 @@ bodyTagHandlers.link = {
     local curX,curY = term.getCursorPos()
     local tColor = term.getTextColor()
     local bgColor = term.getBackgroundColor()
-    primeui.button(windowStack[#windowStack],curX,curY,xml.value,
+    primeui.button(term.current(),curX,curY,xml.value,
       function()
         local protocol = strings.split(file,':')[1]
     
