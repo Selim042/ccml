@@ -1,7 +1,7 @@
 <ccml>
   <body>
     <text>First line</text><br/>
-    <link dest="page2.ccml">Page 2!</link><br/>
+    <link dest="browser.ccml">Page 2!</link><br/>
     <text id="toEdit">YOU CAN'T SEE ME</text>
     <script>
       local txt = "Hello world!  This is a test!  Banana for scale!  "

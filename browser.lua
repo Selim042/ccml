@@ -27,7 +27,10 @@ logger.info("Loading browser script v"..browserScript.VERSION)
 
 -- local fileHandle = fs.open(shell.dir()..'/'..file,'r')
 -- local xml = xmlLib.parseText(fileHandle.readAll())
-local xml = xmlLib.parseText(networking.getFile(file))
+local xml
+local ccmlTag
+local bodyTag
+local headTag
 -- fileHandle.close()
 
 local function findChildren(xml,tagName)
@@ -39,6 +42,14 @@ local function findChildren(xml,tagName)
   end
   return ret
 end
+
+local function loadXML()
+  xml = xmlLib.parseText(networking.getFile(file))
+  ccmlTag = findChildren(xml,'ccml')[1]
+  bodyTag = findChildren(ccmlTag.children,'body')[1]
+  headTag = findChildren(ccmlTag.children,'head')[1]
+end
+loadXML()
 
 local function printTable(tbl,indent)
   if (indent == nil) then indent = '' end
@@ -56,9 +67,6 @@ local function printTable(tbl,indent)
 end
 
 local windowStack = {}
-local ccmlTag = findChildren(xml,'ccml')[1]
-local bodyTag = findChildren(ccmlTag.children,'body')[1]
-local headTag = findChildren(ccmlTag.children,'head')[1]
 
 local alignmentStack = {}
 local function setAlignment(width)
@@ -229,10 +237,17 @@ bodyTagHandlers.link = {
     local curX,curY = term.getCursorPos()
     local tColor = term.getTextColor()
     local bgColor = term.getBackgroundColor()
-    primeui.button(term.current(),curX,curY,xml.value,
+    primeui.button(windowStack[#windowStack],curX,curY,xml.value,
       function()
-        file = xml.dest
-        logger.info("link clicked!")
+        local protocol = strings.split(file,':')[1]
+    
+        local slashSplit = strings.split(file,'/')
+        slashSplit[#slashSplit] = nil
+        local pathMinusFile = table.concat(slashSplit,'/')
+        local destFilePath = pathMinusFile..'/'..xml.attributes.dest
+
+        file = destFilePath
+        os.queueEvent('browser_refresh')
       end
     )
     term.setTextColor(tColor)
@@ -251,6 +266,7 @@ bodyTagHandlers.link = {
 --     term.redirect(windowStack[#windowStack])
 --   end
 -- }
+local outmostTerm = term
 
 local termW,termH = term.getSize()
 local titleWindow = window.create(term.current(),1,1,termW,1)
@@ -311,11 +327,6 @@ local function renderTitle()
       titleWindow.setTextColor(colors.black)
       titleWindow.setBackgroundColor(colors.white)
     end
-  if (headTag ~= nil) then
-    local iconTag = findChildren(headTag.children,'icon')[1]
-    titleWindow.blit(strings.ensure_width(tostring(iconTag.value),2),strings.ensure_width(iconTag.attributes.text,2),strings.ensure_width(iconTag.attributes.background,2))
-    titleWindow.setTextColor(colors.black)
-    titleWindow.setBackgroundColor(colors.white)
 
     local titleTag = findChildren(headTag.children,'title')[1]
     if (titleTag ~= nil) then
@@ -380,6 +391,11 @@ parallel.waitForAll(
         if (e[2] == 1 and e[3] == termW and e[4] == 1) then
           os.queueEvent('terminate')
         end
+      elseif (e[1] == 'browser_refresh') then -- TODO: find better way to handle this
+        loadXML()
+        renderAddress()
+        rerender()
+        renderTitle()
       elseif (e[1] == 'browser_rerender') then -- TODO: find better way to handle this
         rerender()
         renderTitle()
