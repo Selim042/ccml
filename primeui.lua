@@ -157,10 +157,13 @@ function PrimeUI.button(win, x, y, text, action, fgColor, bgColor, clickedColor,
     win.write(" " .. text .. " ")
     -- Get the screen position and add a click handler.
     PrimeUI.addTask(function()
-        local screenX, screenY = PrimeUI.getWindowPos(win, x, y)
         local buttonDown = false
         while true do
             local event, button, clickX, clickY = os.pullEvent()
+            local screenX,screenY = PrimeUI.getWindowPos(win, x, y)
+            if (win.getScrollPos ~= nil and win.getParent ~= nil) then
+                screenY = screenY - win.getScrollPos() + 2
+            end
             if event == "mouse_click" and periphName == nil and button == 1 and clickX >= screenX and clickX < screenX + #text + 2 and clickY == screenY then
                 -- Initiate a click action (but don't trigger until mouse up).
                 buttonDown = true
@@ -668,6 +671,9 @@ function PrimeUI.scrollBox(win, x, y, width, height, innerHeight, allowArrowKeys
     outer.clear()
     -- Create the inner scrolling box.
     local inner = window.create(outer, 1, 1, width - (showScrollIndicators and 1 or 0), innerHeight)
+    inner.getParent = function()
+        return win == term and term.current() or win
+    end
     inner.setBackgroundColor(bgColor)
     inner.clear()
     -- Draw scroll indicators if desired.
@@ -681,6 +687,13 @@ function PrimeUI.scrollBox(win, x, y, width, height, innerHeight, allowArrowKeys
     x, y = PrimeUI.getWindowPos(win, x, y)
     -- Add the scroll handler.
     local scrollPos = 1
+    inner.getScrollPos = function()
+        local ret = scrollPos
+        if (inner.getParent ~= nil and inner.getParent().getScrollPos ~= nil) then
+            ret = ret + inner.getParent().getScrollPos()
+        end
+        return ret
+    end
     local function drawScroll()
         if showScrollIndicators then
             outer.setBackgroundColor(bgColor)
@@ -1083,5 +1096,5 @@ end
 -- YOUR CODE HERE
 return function(log)
     logger = log
-return PrimeUI
+    return PrimeUI
 end
