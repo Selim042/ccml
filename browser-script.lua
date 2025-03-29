@@ -53,7 +53,10 @@ api.execute = function(script,dom)
   local loadedScript = load(script)
   assert(loadedScript)
   setfenv(loadedScript,env)
-  loadedScript()
+  local status,err = pcall(loadedScript)
+  if (not status) then
+    logger.error("Error from script: "..err)
+  end
 end
 
 return function(log)
