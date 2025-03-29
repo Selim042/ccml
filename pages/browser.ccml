@@ -1,9 +1,39 @@
 <ccml>
   <head>
     <icon text="a0" background="33">\136\138</icon>
-    <title>CCML - Example Page</title>
+    <title id="title">CCML - Example Page</title>
   </head>
   <body>
+    <script>
+      local txt = {"scripting","stuffs"}
+      local element = getElementById("toEdit",dom)[1]
+      while true do
+        for _,t in pairs(txt) do
+          element.value = t
+          rerender()
+          sleep(1)
+        end
+      end
+    </script>
+    <script>
+      local element = getElementById("title",dom)[1]
+      local txt = {"CCML","Example Page"}
+      local char = "-"
+      while true do
+        element.value = txt[1]..' '..char..' '..txt[2]
+        if (char == '-') then
+          char = '\\'
+        elseif (char == '\\') then
+          char = '|'
+        elseif (char == '|') then
+          char = '/'
+        elseif (char == '/') then
+          char = '-'
+        end
+        sleep(0.5)
+        rerender()
+      end
+    </script>
     <img src="img.nfp"></img>
     <align value="center">
       <big>CCML Browser</big><br/><br/><br/>
@@ -14,7 +44,8 @@
     <hr pattern="-"/>
     <text>This is a demo site. It uses an experimental browser rendering engine. So far, it supports setting </text>
     <color text="lightBlue"><text>text</text></color><text> and </text><color background="purple"><text>background</text></color>
-    <text> colors, </text><blit text="1234" background="abcd">blit</blit><text>, scripting, images, center and right alignment of text, and more.</text><br/>
+    <text> colors, </text><blit text="1234" background="abcd">blit</blit><text>, </text>
+    <text id="toEdit">scripting</text><text>, images, center and right alignment of text, and more.</text><br/>
     <br/>
     <text>It also now supports scrollable windows! Once the page gets tall enough, the scrollbars are enabled.</text><br/>
     <br/>
@@ -22,6 +53,16 @@
     <hr pattern="-=- "/><br/>
     <hr pattern="-="/><br/>
     <text>As you can see, at the top of the page we also now have icons and page titles!</text>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
     <br/>
     <br/>
     <br/>
