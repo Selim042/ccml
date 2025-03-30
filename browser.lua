@@ -110,7 +110,7 @@ browser.backgroundColorStack = {}
 
 browser.scripts = {}
 
-require("tags")(browser.bodyTagHandlers, browser)
+require("tags")(browser)
 
 
 -- Graphics

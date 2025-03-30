@@ -6,5 +6,4 @@ return function(bodyTagHandlers, env)
             end
         end
     }
-    bodyTagHandlers.t = bodyTagHandlers.text
 end

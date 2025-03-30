@@ -25,5 +25,4 @@ return function(bodyTagHandlers, env)
             end
         end,
     }
-    bodyTagHandlers.colour = bodyTagHandlers.color
 end

@@ -1,13 +1,21 @@
-return function(bodyTagHandlers, env)
-    require("tags.align")(bodyTagHandlers, env)
-    require("tags.text")(bodyTagHandlers, env)
-    require("tags.blit")(bodyTagHandlers, env)
-    require("tags.big")(bodyTagHandlers, env)
-    require("tags.br")(bodyTagHandlers, env)
-    require("tags.color")(bodyTagHandlers, env)
-    require("tags.img")(bodyTagHandlers, env)
-    require("tags.script")(bodyTagHandlers, env)
-    require("tags.hr")(bodyTagHandlers, env)
-    require("tags.link")(bodyTagHandlers, env)
-    --require("tags.window")
+local tagList = {
+    "align",
+    "text",
+    "t",
+    "blit",
+    "big",
+    "br",
+    "color",
+    "colour",
+    "img",
+    "script",
+    "hr",
+    "link",
+    --"window"
+}
+
+return function(browser)
+    for _, tag in pairs(tagList) do
+        require("tags." .. tag)(browser.bodyTagHandlers, browser)
+    end
 end
