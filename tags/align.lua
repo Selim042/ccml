@@ -10,7 +10,7 @@ local validAlignmentValues = {
 return function(bodyTagHandlers, env)
     bodyTagHandlers.align = {
         start = function(xml)
-            if (xml.attributes.value ~= nil) then
+            if (xml.attributes.value == nil) then
                 env.logger.error("Missing value attribute in align tag")
             end
             local validAlign = false
