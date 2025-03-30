@@ -1,4 +1,0 @@
-{
-    ["motd.enable"] = false,
-    ["bios.use_multishell"] = false
-}
