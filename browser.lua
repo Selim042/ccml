@@ -1,35 +1,49 @@
 local browser = {}
-
 browser.file = ({...})[1]
-browser.path = shell.dir()
 
-browser.logger = require('logger').open(browser.path..'/log.txt')
+-- Load our libs
+browser.logger = require('logger').open(shell.dir()..'/log.txt')
 browser.logger.setTimeOffset(-5)
 -- browser.logger.enableDebug()
+browser.browserScript = require('browser-script')(browser.logger)
+browser.networking = require('networking')(browser.logger)
+browser.bodyTagHandlers = {}
+require("tags")(browser)
 
+-- Load other's libs (possibly tweaked)
 browser.primeui = require('primeui')(browser.logger)
 browser.xmlLib = require('xmlLib')
 browser.bigfont = require('bigfont')
-browser.strings = require('cc.strings')
-browser.browserScript = require('browser-script')(browser.logger)
-browser.networking = require('networking')(browser.logger)
 
+-- Load base libs
+browser.strings = require('cc.strings')
+
+-- Setup debug logging monitor if on CraftOS-PC
 if (string.find(_G._HOST,"CraftOS%-PC") ~= nil) then
   periphemu.create('left', 'monitor')
   browser.logger.setMonitor(peripheral.wrap('left'))
 end
 
+-- Startup logs
 browser.logger.info("Browser started")
 if (browser.file == nil) then
-  browser.logger.error("no file specified")
+  browser.logger.error("no address specified")
+  local oldColor = term.getTextColor()
+  term.setTextColor(colors.red)
+  print("Expected an address, example:")
+  print(" browser files://pages/browser.ccml")
+  term.setTextColor(oldColor)
   return
 end
 browser.logger.info("Viewing ".. browser.file)
 browser.logger.info("Loading browser script v".. browser.browserScript.VERSION)
 
--- local fileHandle = fs.open(shell.dir()..'/'.. browser.file,'r')
--- browser.xml = browser.xmlLib.parseText(fileHandle.readAll())
--- fileHandle.close()
+-- Setup stacks for various tags and other browser level variables
+browser.windowStack = {}
+browser.alignmentStack = {}
+browser.textColorStack = {}
+browser.backgroundColorStack = {}
+browser.scripts = {}
 
 local function findChildren(xml,tagName)
   local ret = {}
@@ -41,6 +55,7 @@ local function findChildren(xml,tagName)
   return ret
 end
 
+-- Load data from the path and pull out necessary tags
 local function loadXML()
   browser.xml = browser.xmlLib.parseText(browser.networking.getFile(browser.file))
   browser.ccmlTag = findChildren(browser.xml,'ccml')[1]
@@ -64,9 +79,6 @@ function browser.printTable(tbl,indent)
   end
 end
 
-browser.windowStack = {}
-
-browser.alignmentStack = {}
 function browser.setAlignment(width)
   local alignment = browser.alignmentStack[#browser.alignmentStack]
   local termW,termH = term.getSize()
@@ -78,8 +90,6 @@ function browser.setAlignment(width)
     term.setCursorPos(termW-width+1,cY)
   end
 end
-
-browser.bodyTagHandlers = {}
 
 function browser.writeWrapped(text,rootLevel)
   local termW,termH = term.getSize()
@@ -105,29 +115,23 @@ function browser.writeWrapped(text,rootLevel)
   end
 end
 
-browser.textColorStack = {}
-browser.backgroundColorStack = {}
-
-browser.scripts = {}
-
-require("tags")(browser)
-
-
--- Graphics
+--[[ Graphics ]]--
 local outmostTerm = term
 
 local termW,termH = term.getSize()
+-- Setup window for title stuff
 local titleWindow = window.create(term.current(),1,1,termW,1)
 titleWindow.setBackgroundColor(colors.white)
 titleWindow.setTextColor(colors.black)
 titleWindow.clear()
 
+-- Setup window for address bar
 local addressWindow = window.create(term.current(),1,2,termW,1)
 addressWindow.setBackgroundColor(colors.lightGray)
 addressWindow.setTextColor(colors.black)
 addressWindow.clear()
--- addressWindow.setVisible(true)
 
+-- Window for page content, using PrimeUI
 local renderWindow = browser.primeui.scrollBox(term.current(),1,3,termW,termH-2,termH-2,true,true,colors.white,colors.gray)
 local oldSetCursPos = renderWindow.setCursorPos
 renderWindow.setCursorPos = function(x,y)
@@ -147,7 +151,6 @@ renderWindow.scroll = function(num)
   end
   return oldScroll(num)
 end
--- renderWindow = window.create(term.current(),1,2,termW,termH-1)
 browser.windowStack[#browser.windowStack+1] = renderWindow
 term.redirect(renderWindow)
 
@@ -156,6 +159,7 @@ local function renderAddress()
   addressWindow.write(browser.strings.ensure_width(browser.file,termW))
 end
 
+-- Render page icon, title, and close button
 local function renderTitle()
   titleWindow.clear()
   titleWindow.setCursorPos(termW,1)
