@@ -2,6 +2,8 @@
 
 PRs are welcome, as long as they are documented (preferably better than my own code).
 
+See documentation [here](https://selim042.github.io/ccml/docs/).
+
 ## Features
 - Colored foreground and background text.
 - Blitting text.
