@@ -1,17 +1,19 @@
 # Align
+
 > Back to [tags](./)
 
 Tag used to align child tags to center or right of the parent element.
 
-| Attributes | Required | Default | Values        |
+| Attributes | Required | Default | Value         |
 |------------|----------|---------|---------------|
 | value      | True     |         | center, right |
 
 ## Example
+
 ```xml
 <ccml>
   <body>
-  <align value="center"><text>Hello, this is centered text!</text></align>
+    <align value="center"><text>Hello, this is centered text!</text></align>
   </body>
 </ccml>
 ```
