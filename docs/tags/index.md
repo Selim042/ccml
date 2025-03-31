@@ -1,3 +1,3 @@
 # Tags
 
-[Align](tags/align)
+[Align](align)
