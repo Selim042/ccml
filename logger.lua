@@ -1,6 +1,7 @@
 local api = {}
 
 api.open = function(filePath)
+  local path = filePath
   local file = fs.open(filePath,'a')
   local debugEnabled = false
   local isClosed = false
@@ -89,6 +90,7 @@ api.open = function(filePath)
 
   ret.setTimeOffset = function(offset)
     timeOffset = offset
+    return ret
   end
 
   ret.setMonitor = function(mon)
@@ -97,14 +99,20 @@ api.open = function(filePath)
       local monW,monH = monitor.getSize()
       monitor.setCursorPos(1,monH)
     end
+    return ret
   end
 
   ret.setName = function(nm)
     name = nm
+    return ret
   end
 
   ret.close = function()
     file.close()
+  end
+
+  ret.clone = function()
+    return api.open(filePath).setName(name).setMonitor(monitor).setTimeOffset(timeOffset)
   end
 
   return ret
