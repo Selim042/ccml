@@ -1,5 +1,5 @@
 # Align
-> Back to [tags](../)
+> Back to [tags](./)
 
 Tag used to align child tags to center or right of the parent element.
 
