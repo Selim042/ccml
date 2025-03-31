@@ -26,7 +26,8 @@ local function getFunctions()
   end
   return {
     getElementById = getElementById,
-    rerender = rerender
+    rerender = rerender,
+    logger.clone()
   }
 end
 
@@ -48,15 +49,22 @@ local function getEnv(dom)
   return global
 end
 
+local function errorHandler(msg)
+  logger.error("Error from script: "..msg)
+end
+
 api.execute = function(script,dom)
   local env = getEnv(dom)
-  local loadedScript = load(script)
-  assert(loadedScript)
-  setfenv(loadedScript,env)
-  local status,err = pcall(loadedScript)
-  if (not status) then
-    logger.error("Error from script: "..err)
-  end
+  xpcall(function()
+    load(script,"script","t",env)()
+  end, errorHandler)
+  -- local loadedScript = load(script)
+  -- assert(loadedScript)
+  -- setfenv(loadedScript,env)
+  -- local status,err = pcall(loadedScript)
+  -- if (not status) then
+  --   logger.error("Error from script: "..err)
+  -- end
 end
 
 return function(log)
