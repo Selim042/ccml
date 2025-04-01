@@ -18,7 +18,7 @@ jobs:
           # Example inputs ordered by usefulness
           #root: ./src
           timeout: 1m
-          disable_root: true
+          #disable_root: true
           #directory: ./cc
           options: --exec browser file://pages/test.ccml
           disable_tweaks: true
