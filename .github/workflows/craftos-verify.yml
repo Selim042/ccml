@@ -15,7 +15,7 @@ jobs:
       - name: Command Output
         uses: mathiasvr/command-output@34408ea3d0528273faff3d9e201761ae96106cd0
         with:
-          run: wget https://raw.githubusercontent.com/cc-tweaked/CC-Tweaked/9c0ce27ce6ac568ecdff2a369cf517cb9431279f/projects/core/src/main/resources/data/computercraft/lua/rom/modules/main/cc/strings.lua
+          run: wget https://raw.githubusercontent.com/cc-tweaked/CC-Tweaked/9c0ce27ce6ac568ecdff2a369cf517cb9431279f/projects/core/src/main/resources/data/computercraft/lua/rom/modules/main/cc/strings.lua /home/runner/work/ccml/ccml/
 
       - name: CraftOS-PC >_
         uses: Commandcracker/craftos-pc-action@v1
