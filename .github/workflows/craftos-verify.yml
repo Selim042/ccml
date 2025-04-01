@@ -20,7 +20,7 @@ jobs:
           timeout: 1m
           disable_root: true
           directory: ./cc
-          options: --exec print('Hello, World!')
+          options: --exec browser file://pages/test.ccml
           disable_tweaks: true
           timeout_signal: "KILL"
           disable_timeout_verbose: true
