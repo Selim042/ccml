@@ -19,7 +19,7 @@ browser.bigfont = require('bigfont')
 browser.strings = require('cc.strings')
 
 -- Setup debug logging monitor if on CraftOS-PC
-if (string.find(_G._HOST,"CraftOS%-PC") ~= nil) then
+if (string.find(_G._HOST,"CraftOS%-PC") ~= nil and os.getComputerID() ~= -1) then
   periphemu.create('left', 'monitor')
   browser.logger.setMonitor(peripheral.wrap('left'))
 end
