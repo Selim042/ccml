@@ -21,7 +21,6 @@ jobs:
           #disable_root: true
           #directory: ./cc
           options: --exec browser file://pages/test.ccml
-          disable_tweaks: true
           timeout_signal: "KILL"
           disable_timeout_verbose: true
           timeout_arguments: "--preserve-status"
