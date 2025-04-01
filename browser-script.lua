@@ -1,7 +1,7 @@
 local logger
 
 local api = {}
-api.VERSION = "1.0.0"
+api.VERSION = "2025.02.0"
 
 local function getFunctions()
   local function getElementById(elementId,dom)
@@ -26,8 +26,7 @@ local function getFunctions()
   end
   return {
     getElementById = getElementById,
-    rerender = rerender,
-    logger.clone()
+    rerender = rerender
   }
 end
 
@@ -46,6 +45,11 @@ local function getEnv(dom)
   for k,v in pairs(string) do
     global.string[k] = v
   end
+  global.logger = {
+    info = logger.info,
+    error = logger.error,
+    debug = logger.debug
+  }
   return global
 end
 
@@ -58,13 +62,6 @@ api.execute = function(script,dom)
   xpcall(function()
     load(script,"script","t",env)()
   end, errorHandler)
-  -- local loadedScript = load(script)
-  -- assert(loadedScript)
-  -- setfenv(loadedScript,env)
-  -- local status,err = pcall(loadedScript)
-  -- if (not status) then
-  --   logger.error("Error from script: "..err)
-  -- end
 end
 
 return function(log)

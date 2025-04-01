@@ -110,11 +110,7 @@ api.open = function(filePath)
   ret.close = function()
     file.close()
   end
-
-  ret.clone = function()
-    return api.open(filePath).setName(name).setMonitor(monitor).setTimeOffset(timeOffset)
-  end
-
+  
   return ret
 end
 

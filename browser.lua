@@ -19,7 +19,7 @@ browser.bigfont = require('bigfont')
 browser.strings = require('cc.strings')
 
 -- Setup debug logging monitor if on CraftOS-PC
-if (string.find(_G._HOST,"CraftOS%-PC") ~= nil) then
+if (string.find(_G._HOST,"CraftOS%-PC") ~= nil and os.getComputerID() ~= -1) then
   periphemu.create('left', 'monitor')
   browser.logger.setMonitor(peripheral.wrap('left'))
 end
@@ -234,32 +234,49 @@ local function rerender()
   renderBody(browser.bodyTag)
 end
 
-parallel.waitForAll(
-  function()
-    rerender()
-    while true do
-      local e = {os.pullEventRaw()}
-      if (e[1] == 'mouse_click') then
-        if (e[2] == 1 and e[3] == termW and e[4] == 1) then
-          os.queueEvent('terminate')
+local function runPageStuff()
+  local terminated = false
+  parallel.waitForAll(
+    function()
+      rerender()
+      while true do
+        local e = {os.pullEventRaw()}
+        if (e[1] == 'mouse_click') then
+          if (e[2] == 1 and e[3] == termW and e[4] == 1) then
+            os.queueEvent('terminate')
+          end
+        elseif (e[1] == 'browser_refresh') then -- TODO: find better way to handle this
+          terminated = true
+          loadXML()
+          renderAddress()
+          rerender()
+          renderTitle()
+        elseif (e[1] == 'browser_rerender') then -- TODO: find better way to handle this
+          rerender()
+          renderTitle()
+        elseif (e[1] == 'terminate') then
+          term.scroll(termH)
+          term.clear()
+          term.setCursorPos(1,1)
+          return
         end
-      elseif (e[1] == 'browser_refresh') then -- TODO: find better way to handle this
-        loadXML()
-        renderAddress()
-        rerender()
-        renderTitle()
-      elseif (e[1] == 'browser_rerender') then -- TODO: find better way to handle this
-        rerender()
-        renderTitle()
-      elseif (e[1] == 'terminate') then
-        term.scroll(termH)
-        term.clear()
-        term.setCursorPos(1,1)
-        return
       end
+    end,
+    browser.primeui.run,
+    function()
+      parallel.waitForAny(
+        function()
+          while (not terminated) do
+            coroutine.yield()
+          end
+        end,
+        table.unpack(browser.scripts)
+      )
     end
-  end,
-  browser.primeui.run,
-  table.unpack(browser.scripts)
-)
+  )
+end
+
+while true do
+  runPageStuff()
+end
 browser.logger.close()
