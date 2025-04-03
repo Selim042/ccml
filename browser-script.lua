@@ -55,9 +55,7 @@ end
 
 api.execute = function(script,dom)
   local env = getEnv(dom)
-  xpcall(function()
-    load(script,"script","t",env)()
-  end, errorHandler)
+  xpcall(load(script,"script","t",env), errorHandler)
   -- local loadedScript = load(script)
   -- assert(loadedScript)
   -- setfenv(loadedScript,env)
