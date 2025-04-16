@@ -1,4 +1,4 @@
-# ccml
+# ccml [![CraftOS-PC Verify](https://github.com/Selim042/ccml/actions/workflows/craftos-verify.yml/badge.svg)](https://github.com/Selim042/ccml/actions/workflows/craftos-verify.yml)
 
 PRs are welcome, as long as they are documented (preferably better than my own code).
 
