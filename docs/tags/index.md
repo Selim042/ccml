@@ -6,7 +6,7 @@
 - [Break](br)
 - [Color](color)
 - [Colour](color)
-- [Horitonzal Line](hr)
+- [Horizontal Line](hr)
 - [Image](img)
 - [Link](link)
 - [Script](script)
