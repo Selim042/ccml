@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - main
-# permissions:
-#   contents: write
-#   pull-requests: read
+permissions:
+  contents: write
+  pull-requests: read
 
 jobs:
   publish:
@@ -21,6 +21,7 @@ jobs:
           timeout: 1m
           id: -1
           options: --exec build
+          root: /home/runner/work/ccml/ccml
           timeout_signal: "KILL"
           disable_timeout_verbose: true
           timeout_arguments: "--preserve-status"
