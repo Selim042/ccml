@@ -1,0 +1,39 @@
+name: CraftOS-PC Build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: CraftOS-PC >_
+        uses: Commandcracker/craftos-pc-action@d161184586f23efb902c3f013b6b378af6463b25
+        with:
+          timeout: 1m
+          id: -1
+          options: --exec browser file://pages/test.ccml
+          timeout_signal: "KILL"
+          disable_timeout_verbose: true
+          timeout_arguments: "--preserve-status"
+
+      - name: Tag/Release on Push Action
+        uses: rymndhng/release-on-push-action@v0.27.0
+        with:
+          # The bumping scheme to use by default. One of minor|major|patch|norelease
+          bump_version_scheme: patch
+          # Additional text to insert into the release's body.
+          # release_body: # optional
+          # Prefix to append to git tags. To unset this, set version_prefix to an empty string.
+          # tag_prefix: # optional, default is v
+          # Name of the release.
+          release_name: <RELEASE_TAG>
+          # Maximum number of commits to add to release body
+          # max_commits: # optional, default is 50
+          # When set to 'true', uses Github's Generated Release Notes instead of this plugin's release notes
+          use_github_release_notes: true
