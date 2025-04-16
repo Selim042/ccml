@@ -25,14 +25,18 @@ jobs:
           disable_timeout_verbose: true
           timeout_arguments: "--preserve-status"
 
-      - uses: ChanTsune/release-with-commit@v2.8.0
+      - name: Tag/Release on Push Action
+        uses: rymndhng/release-on-push-action@v0.27.0
         with:
-          regexp: "Release ((\\d+([.]\\d+)*)-(alpha|beta|rc)\\d*)((\\s|\\S)*)"
-          regexp_options: "us"
-          release_name: "version $1"
-          tag_name: "v$1"
-          body: "$5"
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' # This token is provided by Actions, you do not need to create your own token
+          # The bumping scheme to use by default. One of minor|major|patch|norelease
+          bump_version_scheme: patch
+          # Additional text to insert into the release's body.
+          # release_body: # optional
+          # Prefix to append to git tags. To unset this, set version_prefix to an empty string.
+          tag_prefix: "Beta "
+          # Name of the release.
+          release_name: "${{ github.sha }}"
+          # Maximum number of commits to add to release body
+          # max_commits: # optional, default is 50
+          # When set to 'true', uses Github's Generated Release Notes instead of this plugin's release notes
+          use_github_release_notes: true
