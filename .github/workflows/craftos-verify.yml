@@ -12,10 +12,10 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      - name: Command Output
-        uses: mathiasvr/command-output@34408ea3d0528273faff3d9e201761ae96106cd0
-        with:
-          run: mkdir /home/runner/work/ccml/ccml/cc/ && wget https://raw.githubusercontent.com/cc-tweaked/CC-Tweaked/9c0ce27ce6ac568ecdff2a369cf517cb9431279f/projects/core/src/main/resources/data/computercraft/lua/rom/modules/main/cc/strings.lua -o /home/runner/work/ccml/ccml/cc/strings.lua
+      # - name: Command Output
+      #   uses: mathiasvr/command-output@34408ea3d0528273faff3d9e201761ae96106cd0
+      #   with:
+      #     run: mkdir /home/runner/work/ccml/ccml/cc/ && wget https://raw.githubusercontent.com/cc-tweaked/CC-Tweaked/9c0ce27ce6ac568ecdff2a369cf517cb9431279f/projects/core/src/main/resources/data/computercraft/lua/rom/modules/main/cc/strings.lua -o /home/runner/work/ccml/ccml/cc/strings.lua
 
       - name: CraftOS-PC >_
         uses: Commandcracker/craftos-pc-action@d161184586f23efb902c3f013b6b378af6463b25
