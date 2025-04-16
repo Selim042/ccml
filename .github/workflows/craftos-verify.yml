@@ -1,4 +1,4 @@
-name: CraftOS-PC Action
+name: CraftOS-PC Verify
 on:
   workflow_dispatch:
   push:
